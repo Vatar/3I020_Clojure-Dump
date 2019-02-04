@@ -130,6 +130,8 @@
 (declare filtre-indications)
 
 
+
+
 (fact "Le `filtre-indications` fonctionne bien."
       (filtre-indications [:rouge :rouge :vert :bleu] 
                           [:vert :rouge :bleu :jaune]

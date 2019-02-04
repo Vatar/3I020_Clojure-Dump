@@ -172,15 +172,31 @@
 
 (defn union
   [vect1,vect2]
-  (apply merge vect1 vect2))
+  (loop[s vect1,res vect2]
+    (if(seq s)
+      (recur (rest s) (if (contains? vect1 (first s))
+                        (conj res (first s))
+                        res))
+      (into #{} res))))
+    
 
-(defn intersection ;;Je laisse tomber l'intersection
+(defn intersection 
   [vect1,vect2]
-  (clojure.set/intersection vect1 vect2))
+  (loop[s vect1,res []]
+    (if(seq s)
+      (recur (rest s) (if (contains? vect2 (first s)) 
+                        (conj res (first s))
+                        res))
+      (into #{} res))))
 
 (defn difference
   [vect1,vect2]
-  (apply disj vect1 vect2))
+  (loop[s vect1,res []]
+    (if(seq s)
+      (recur (rest s) (if (not(contains? vect2 (first s))) 
+                        (conj res (first s))
+                        res))
+      (into #{} res))))
   
 
 (apply merge #{1 2} #{1 2 3 4})
@@ -189,7 +205,7 @@
 
 (apply conj #{1 2} #{1 3 4}) 
 
-
+(intersection #{1 2 4} #{2 3 4 5}) 
 
 (get #{1 2} 0) ;;Comment récupérer les valeurs du set aaaaaaa
 
