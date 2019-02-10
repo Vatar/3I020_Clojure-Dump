@@ -207,7 +207,7 @@
 
 (intersection #{1 2 4} #{2 3 4 5}) 
 
-(get #{1 2} 0) ;;Comment récupérer les valeurs du set aaaaaaa
+(get #{1 2} 0) 
 
 (into () #{1 2})
 
