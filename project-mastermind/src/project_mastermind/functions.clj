@@ -2,6 +2,10 @@
   (:use midje.sweet))
 
 
+
+;;; J'ai laissé mon "brouillon" avec les appels de fonctions entre la défintion de la fonction
+;;; et les tests pour trouver la bonne voie avec l'aide du InstaREPL
+
 (declare code-secret)
 
 (defn code-secret
@@ -135,9 +139,13 @@
     [:good :color :color :color])  
   => [:good :color :color :bad])
 
+
+;;Fonctions pour le loop du jeu
+
 (declare check-win)
 
 (defn check-win
+  "Vérifie si le joueur à gagné avec une indication entièrement composée de :good"
   [findic]
   (every? (fn [a] (= a :good)) findic))
   
@@ -157,6 +165,7 @@
 (declare submit-convert)
 
 (defn submit-convert
+  "Convertit la soumission en vecteur compatible avec les fonctions précédentes "
   [list]
   (into [] list))
   
@@ -180,9 +189,54 @@
 (submit-convert (map keyword ["a","b"]))
 
 (submit-convert (:a :b)) 
+
+
+;;Fonctions pour le solveur
+
+
+(declare rand-color)
+
+(defn rand-color
+  []
+  (rand-nth [:rouge :bleu :vert :jaune :noir :blanc]))
+  
+
+(rand-color)
+
+
+
+(declare dumb-bot-brute-force)
+
+;;Si on voulait un bot plus intelligent, il éviterait de tirer la même couleur au hasard que celle d'origine
+;; + tenir en compte des indications :color pour tenter cette couleur à un endroit :bad
+(defn dumb-bot-brute-force
+  "L'ordinateur garde les couleurs :bonnes et retente un nouveau couleur au hasard pour le reste"
+  [orig,result]
+  (loop [i 0, res []]
+    (if (< i (count orig))
+      (recur (inc i) (conj res (cond
+                                 (= (get result i) :good) (get orig i)
+                                 :else (rand-color))))
+      res)))
+  
+  
+(dumb-bot-brute-force [:rouge :rouge :bleu :vert] [:good :color :color :bad])  
   
 
 
+
+(fact "Le `dumb-bot-brute-force` est bien composé de couleurs."  
+  (every? #{:rouge :bleu :vert :jaune :noir :blanc}      
+    (dumb-bot-brute-force [:rouge :bleu :jaune :vert] [:good :color :bad :bad]))  
+  => true)
+
+(fact "Le `dumb-bot-brute-force` a l'air aléatoire."    
+            (> (count (filter true? (map not=   
+                                      (repeatedly 20 #(dumb-bot-brute-force [:rouge :bleu :jaune :vert] [:good :color :bad :bad]))       
+                                      (repeatedly 20 #(dumb-bot-brute-force [:rouge :bleu :jaune :vert] [:good :color :bad :bad])))))
+               0)
+  
+  => true)
 
 
 
