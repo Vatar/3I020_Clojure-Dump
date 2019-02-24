@@ -9,6 +9,17 @@
 
 (declare const-seq)
 
+(defn const-seq
+  [n]
+  (repeat n))
+
+
+
+(take 4 (const-seq 1)) 
+
+(take 3 (drop 1000 (const-seq :bip)))
+(reduce + (take 1000 (const-seq 1)))
+
 
 (fact "`const-seq` est la bonne séquence."
       (take 4 (const-seq 1)) => '(1 1 1 1)
@@ -19,7 +30,19 @@
 
 ;; ## Question 2
 
-(declare ints)
+(declare intss)
+
+(defn intss
+  [n]
+  (iterate inc n)) 
+  
+
+(take 5 (intss 1)) 
+
+(first (drop 99 (intss 1)))
+
+
+(reduce * (take 6 (intss 1))) 
 
 
 (fact "`ints` génère la bonne séquence."
@@ -33,6 +56,18 @@
 
 (declare fibo-seq)
 
+(defn fibo-seq
+  []
+  (map first (iterate (fn [[a b]] [b (+ a b)]) [0 1])))
+
+
+(take 11 (iterate (fn [[a b]] [b (+ a b)]) [0 1]))
+
+(take 11 (fibo-seq))
+
+
+(first (drop 91 (fibo-seq)))
+
 
 (fact "Les premiers termes de `fibo-seq` sont justes,
       (d'après Wikipedia."
@@ -45,6 +80,22 @@
 
 (declare primes)
 
+(defn divisible? 
+  [a b]
+  (zero? (mod a b)))
+
+(defn prime? 
+  [n]
+  (and (> n 1) (not-any? (partial divisible? n) (range 2 n))))
+
+(defn primes
+  []
+  (filter prime? (range)))
+  
+
+(take 10 (primes))
+
+(first (drop 1000 (primes)))
 
 (fact "Les premiers termes de `primes` sont justes."
       (take 10 (primes)) => '(2 3 5 7 11 13 17 19 23 29))
@@ -56,6 +107,10 @@
 
 (declare const-seq')
 
+(defn const-seq'
+  [n]
+  (repeat n))
+
 
 (fact "`const-seq'` retourne la bonne séquence."
       (take 4 (const-seq' 1)) => '(1 1 1 1)
@@ -66,12 +121,26 @@
 
 (declare ints')
 
+(defn ints'
+  [n]
+  (iterate inc n)) 
+
 
 (fact "`ints'` génère la bonne séquence."
       (take 5 (ints' 1)) => '(1 2 3 4 5)
       (first (drop 99 (ints' 1))) => 100)
 
 ;; ## Question 6
+
+
+(defn rand-seq
+  [b]
+  (repeatedly #(rand-int b)))
+  
+
+
+(rand-seq 3)
+
 
 
 (fact "`rand-seq` retourne bien des entiers dans les bornes fixées."
